@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 use App\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\department;
+
 
 class CategoryController extends Controller
 {
@@ -14,7 +16,14 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Category::all();
+        // return Category::all();
+        return department::Collection(Category::all());
+        
+    }
+    public function indexid($id=True)
+    {
+      
+        return Category::find($id);
     }
 
     /**
@@ -35,7 +44,17 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $category = new Category();
+        $category->name = $request->name;
+        $slug = str_slug($request->name);
+        $category->slug = $slug;
+        $result=$category->save();
+        if($result){
+            return ["result"=>"Data has been send"];
+        }else{
+            return ["result"=>"Data has not send"];
+        }
+
     }
 
     /**
@@ -67,9 +86,25 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $this->validate($request,[
+            'name' => 'required',          
+        ]);
+       
+       
+        $slug = str_slug($request->name);
+        $category = Category::find($request->id);
+//        
+
+        $category->name = $request->name;
+        $category->slug = $slug;       
+        $result=$category->save();
+        if($result){
+            return ["result"=>"Data has been Update"];
+        }else{
+            return ["result"=>"Data has not Update"];
+        }
     }
 
     /**
@@ -80,6 +115,13 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = Category::find($id);
+      
+        $result=$category->delete();
+        if($result){
+            return ["result"=>"Data has been Delete ".$id];
+        }else{
+            return ["result"=>"Data has not Delete"];
+        }
     }
 }
