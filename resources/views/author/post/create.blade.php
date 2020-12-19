@@ -45,13 +45,13 @@
                     <div class="card">
                         <div class="header">
                             <h2>
-                                Categories and Tags
+                                Department and Tags
                             </h2>
                         </div>
                         <div class="body">
                             <div class="form-group form-float">
                                 <div class="form-line {{ $errors->has('categories') ? 'focused error' : '' }}">
-                                    <label for="category">Select Category</label>
+                                    <label for="category">Select Department</label>
                                     <select name="categories[]" id="category" class="form-control show-tick" data-live-search="true" multiple>
                                         @foreach($categories as $category)
                                             <option value="{{ $category->id }}">{{ $category->name }}</option>

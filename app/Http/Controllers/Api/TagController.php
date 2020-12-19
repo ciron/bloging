@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 use App\Tag;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Tags;
+
 
 class TagController extends Controller
 {
@@ -14,7 +16,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        return Tag::all();
+        return Tags::Collection(Tag::all());
     }
 
     /**
@@ -35,7 +37,18 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'name' => 'required'
+        ]);
+        $tag = new Tag();
+        $tag->name = $request->name;
+        $tag->slug = str_slug($request->name);
+        $result=$tag->save();
+        if($result){
+            return ["result"=>"Tag has been send"];
+        }else{
+            return ["result"=>"Tag has not send"];
+        }
     }
 
     /**
@@ -67,9 +80,17 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $tag = Tag::find($request->id);
+        $tag->name = $request->name;
+        $tag->slug = str_slug($request->name);
+        $result=$tag->save();
+        if($result){
+            return ["result"=>"tag has been Update"];
+        }else{
+            return ["result"=>"tag has not Update"];
+        }
     }
 
     /**
@@ -80,6 +101,14 @@ class TagController extends Controller
      */
     public function destroy($id)
     {
-        //
+       
+        $tag = Tag::find($id);
+      
+        $result=$tag->delete();
+        if($result){
+            return ["result"=>"tag has been Delete ".$id];
+        }else{
+            return ["result"=>"Dtagata has not Delete"];
+        }
     }
 }
